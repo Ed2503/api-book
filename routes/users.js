@@ -38,5 +38,37 @@ router.post('/register', (req, res, next) => {
     })
   }
 })
+router.post('/login', (req, res, next) => {
+  var autentication = req.session.autenticado;
+  if (autentication == undefined || autentication == null) {
+    registerSchema.findOne({
+      user: req.body.user,
+      password: req.body.password
+    }, (err, obj) => {
+      (err) ? res.status(403).send(
+        {
+          status: 'error',
+          action: 'failed',
+          content: {
+            login: false,
+            data: null
+          }
+        }
+      ) : 
+      console.log(obj)
+      res.status(200).send(
+        {
+          status: 'ok',
+          action: 'correct',
+          content: {
+            login: true,
+            data: obj
+          }
+        }
+      )
+      autentication = true
+    })
+  }
+}) 
 
 module.exports = router;
