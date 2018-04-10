@@ -4,24 +4,21 @@ var mongoose = require('mongoose')
 var registerSchema = require('../schemas/register-schema')
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
 
 router.post('/register', (req, res, next) => {
   if (
-    typeof req.body.email != 'String' && 
-    typeof req.body.user != 'String' && 
-    typeof req.body.password != 'String'
+    typeof req.body.email != 'string' && 
+    typeof req.body.user != 'string' && 
+    typeof req.body.password != 'string'
   ) {
     res.status(403).send("ERROR");
   } else {
-    registerSchema({
+    const registro = new registerSchema({
       email: req.body.email,
       user: req.body.user,
       password: req.body.password
     })
-    registerSchema.save((err, prod) => {
+    registro.save((err, prod) => {
       err ? 
       console.error('Error in the save!!') 
       : 
@@ -38,6 +35,7 @@ router.post('/register', (req, res, next) => {
     })
   }
 })
+
 router.post('/login', (req, res, next) => {
   var autentication = req.session.autenticado;
   if (autentication == undefined || autentication == null) {
@@ -45,28 +43,37 @@ router.post('/login', (req, res, next) => {
       user: req.body.user,
       password: req.body.password
     }, (err, obj) => {
-      (err) ? res.status(403).send(
+      if (err) { res.status(200).send(
         {
           status: 'error',
           action: 'failed',
-          content: {
-            login: false,
-            data: null
-          }
+          content: 'Error undefined'
         }
-      ) : 
-      console.log(obj)
-      res.status(200).send(
-        {
-          status: 'ok',
-          action: 'correct',
-          content: {
-            login: true,
-            data: obj
+      ) }
+      else if (obj) {
+        res.status(200).send(
+          {
+            status: 'ok',
+            action: 'correct',
+            content: {
+              login: true,
+              data: obj
+            }
           }
-        }
-      )
-      autentication = true
+        )
+        autentication = true
+      } else {
+        res.status(200).send(
+          {
+            status: 'failed',
+            action: 'correct',
+            content: {
+              login: false,
+              err: 'The user no exist!!'
+            }
+          }
+        )
+      }
     })
   }
 }) 
