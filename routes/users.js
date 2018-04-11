@@ -4,6 +4,9 @@ var mongoose = require('mongoose')
 var registerSchema = require('../schemas/register-schema')
 
 /* GET users listing. */
+router.get('/', (req, res, next) => {
+  res.send({puto: 'tu'})
+})
 
 router.post('/register', (req, res, next) => {
   if (
@@ -37,7 +40,7 @@ router.post('/register', (req, res, next) => {
 })
 
 router.post('/login', (req, res, next) => {
-  var autentication = req.session.autenticado;
+  var autentication = req.session.autorizado;
   if (autentication == undefined || autentication == null) {
     registerSchema.findOne({
       user: req.body.user,
@@ -51,6 +54,7 @@ router.post('/login', (req, res, next) => {
         }
       ) }
       else if (obj) {
+        req.session.authorized = true
         res.status(200).send(
           {
             status: 'ok',
@@ -61,7 +65,6 @@ router.post('/login', (req, res, next) => {
             }
           }
         )
-        autentication = true
       } else {
         res.status(200).send(
           {
