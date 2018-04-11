@@ -16,7 +16,7 @@ var app = express();
 
 // Connection from data base
 
-mongoose.connect('mongodb://ed2503:edison2503@ds123718.mlab.com:23718/test1');
+mongoose.connect('///////');
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));

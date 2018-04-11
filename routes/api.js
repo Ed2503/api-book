@@ -17,19 +17,6 @@ const authorized = (req, res, next) => {
   }
 }
 
-const validatorCreate = (el1, el2, el3, el4) => {
-  let acum;
-  if (typeof el1 == 'string') acum++
-  if (typeof el2 == 'string') acum++
-  if (typeof el3 == 'string') acum++
-  if (typeof el4 == 'string') acum++
-  if (acum == 4) {
-    return true
-  } else {
-    return false
-  }
-}
-
 router.use(authorized)
 
 router.get('/book', function(req, res, next) {
@@ -64,6 +51,22 @@ router.post('/create', (req, res, next) => {
         action: 'correct',
         content: {
           save: true
+        }
+      })
+    }
+  })
+})
+
+router.post('/delete', (req, res, next) => {
+  apiSchema.remove({_id: req.body.id}, err => {
+    if (err) {
+      res.status(500).send('ERROR')
+    } else {
+      res.status(200).send({
+        status: 'ok',
+        action: 'correct',
+        content: {
+          delete: true
         }
       })
     }
